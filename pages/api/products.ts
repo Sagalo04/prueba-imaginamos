@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Categories from "../../json/categories.json"
+import Products from "../../json/products.json"
 
 type Data = {
   // id: number,
@@ -12,5 +12,5 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json(Categories)
+  res.status(200).json(Products)
 }
