@@ -1,18 +1,22 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import CategoryButton from "../components/CategoryButton/CategoryButton";
-import styles from "../styles/Home.module.css";
 import { connect } from "react-redux";
+import { useCallback, useEffect } from "react";
+import styled from "styled-components";
 import {
   changeCategoryAction,
   getProductsAction,
   addCartAction,
   getCartAction,
 } from "../redux/productsDuck";
-import { useCallback, useEffect } from "react";
-import styled from "styled-components";
-import CardProduct from "../components/CardProduct/CardProduct";
+import styles from "../styles/Home.module.css";
+import CategoryDeck from "../components/CategoryDeck/CategoryDeck";
+import ProductsDeck from "../components/ProductsDeck/ProductsDeck";
+import Sidebar from "../components/Sidebar/Sidebar";
+import timeImg from "../assets/icons/149316.svg"
+import headerimage from '../assets/images/headerimage.png';
+
 interface Props {
   Categories: any;
   Products: any;
@@ -25,30 +29,42 @@ interface Props {
   getCartAction: any;
 }
 
-const CategoryDeck = styled.div`
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 4rem;
-`;
-
-const ProductsDeck = styled.div`
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-`;
-
 const HomeStyled = styled.div`
   display: flex;
+  justify-content: space-between;
   min-height: 100vh;
 `;
 
-const Sidebar = styled.div`
+const TitleRestaurants = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 800px;
-  background-color: #fdfdfb;
-  box-shadow: 1px 2px 2px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 2rem;
+  font-weight: 500;
 `;
+
+const Button = styled.button`
+  background-color: #ff6223;
+  color: white;
+  font-size: .8rem;
+  font-weight: 400;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 150px;
+  height: 30px;
+  padding:1.3rem 1rem;
+
+`;
+
+const StyledBanner = styled.div`
+  background-color :#fff7eb;
+  display: flex;
+  align-items: self-end;
+  height: 200px;
+
+  `;
 
 const Home: NextPage<Props> = ({
   Categories,
@@ -59,11 +75,9 @@ const Home: NextPage<Props> = ({
   productos,
   categoria,
   cart,
-  getCartAction,
 }) => {
   useEffect(() => {
     getProductsAction(categoria, Products);
-    // getCartAction(cart)
   }, [Products, categoria, getProductsAction]);
 
   const categoryHandler = useCallback(
@@ -85,45 +99,27 @@ const Home: NextPage<Props> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <HomeStyled>
-        <div style={{ marginRight: "1rem" }}>
-          <CategoryDeck>
-            {Categories?.map((category: any) => {
-              return (
-                <CategoryButton
-                  id={category.id}
-                  handler={categoryHandler}
-                  key={category.id}
-                  name={category.name}
-                  icon={category.icon}
-                  categoria={categoria}
-                />
-              );
-            })}
-          </CategoryDeck>
-          <ProductsDeck>
-            {productos?.length
-              ? productos.map((prod: any) => {
-                  return (
-                    <CardProduct
-                      id={prod.id}
-                      key={prod.id}
-                      name={prod.name}
-                      time={prod.time}
-                      image={prod.image}
-                      qualification={prod.qualification}
-                      price={prod.price}
-                      handler={cardHandler}
-                    />
-                  );
-                })
-              : null}
-          </ProductsDeck>
+        <div
+          style={{ marginRight: "1rem", paddingBottom: "3rem", width: "65%", padding: "2rem 0" }}
+        >
+          <StyledBanner>
+            <Image src={headerimage} alt="" layout="fixed" width={200} height={250}/ >
+          </StyledBanner>
+          <TitleRestaurants>
+            <h1>Restaurants 🍔</h1>
+            <Button>
+              <Image src={timeImg} alt="" width={18} height={18} />
+              <p>Delivery: Now</p>
+            </Button>
+          </TitleRestaurants>
+          <CategoryDeck
+            Categories={Categories}
+            categoria={categoria}
+            categoryHandler={categoryHandler}
+          />
+          <ProductsDeck productos={productos} cardHandler={cardHandler} />
         </div>
-        <Sidebar>
-          {cart?.length ? cart?.map((prod: any, index: number) => {
-            return <h1 key={index}>{prod.name}</h1>;
-          }):null}
-        </Sidebar>
+        <Sidebar cart={cart} />
       </HomeStyled>
     </div>
   );
